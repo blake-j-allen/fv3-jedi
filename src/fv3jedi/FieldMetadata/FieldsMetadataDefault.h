@@ -104,6 +104,127 @@ namespace fv3jedi {
     // Default field metadata
     // ----------------------
 
+    md.longName = "dry_air_density";
+    md.shortName = "dry_air_density";
+    md.units = "kgm-3";
+    md.kind = "double";
+    md.tracer = "false";
+    md.horizontalStaggerLocation = "center";
+    md.levels = "full";
+    md.space = "magnitude";
+    addFieldMetadata(fieldsmetadata, nlev, md);
+
+    md.longName = "mixing_ratio_of_smoke_wrt_dry_air";
+    md.shortName = "smoke";
+    md.units = "ugkg-1";
+    md.kind = "double";
+    md.tracer = "true";
+    md.horizontalStaggerLocation = "center";
+    md.levels = "full";
+    md.space = "magnitude";
+    addFieldMetadata(fieldsmetadata, nlev, md);
+
+    md.longName = "mixing_ratio_of_dust_wrt_dry_air";
+    md.shortName = "dust";
+    md.units = "ugkg-1";
+    md.kind = "double";
+    md.tracer = "true";
+    md.horizontalStaggerLocation = "center";
+    md.levels = "full";
+    md.space = "magnitude";
+    addFieldMetadata(fieldsmetadata, nlev, md);
+
+    md.longName = "mixing_ratio_of_coarsepm_wrt_dry_air";
+    md.shortName = "coarsepm";
+    md.units = "ugkg-1";
+    md.kind = "double";
+    md.tracer = "true";
+    md.horizontalStaggerLocation = "center";
+    md.levels = "full";
+    md.space = "magnitude";
+    addFieldMetadata(fieldsmetadata, nlev, md);
+
+    md.longName = "mixing_ratio_of_particulate_matter_2p5_in_air";
+    md.shortName = "mixing_ratio_of_particulate_matter_2p5_in_air";
+    md.units = "ugkg-1";
+    md.kind = "double";
+    md.tracer = "true";
+    md.horizontalStaggerLocation = "center";
+    md.levels = "full";
+    md.space = "magnitude";
+    addFieldMetadata(fieldsmetadata, nlev, md);
+
+
+    md.longName = "pm2p5_fraction_of_aitken_mode";
+    md.shortName = "pm25at";
+    md.units = "none";
+    md.kind = "double";
+    md.tracer = "true";
+    md.horizontalStaggerLocation = "center";
+    md.levels = "full";
+    md.space = "magnitude";
+    addFieldMetadata(fieldsmetadata, nlev, md);
+
+    md.longName = "pm2p5_fraction_of_accumulation_mode";
+    md.shortName = "pm25ac";
+    md.units = "none";
+    md.kind = "double";
+    md.tracer = "true";
+    md.horizontalStaggerLocation = "center";
+    md.levels = "full";
+    md.space = "magnitude";
+    addFieldMetadata(fieldsmetadata, nlev, md);
+
+    md.longName = "pm2p5_fraction_of_coarse_mode";
+    md.shortName = "pm25co";
+    md.units = "none";
+    md.kind = "double";
+    md.tracer = "true";
+    md.horizontalStaggerLocation = "center";
+    md.levels = "full";
+    md.space = "magnitude";
+    addFieldMetadata(fieldsmetadata, nlev, md);
+
+    md.longName = "mass_density_of_particulate_matter_2p5_in_air";
+    md.shortName = "mass_density_of_particulate_matter_2p5_in_air";
+    md.units = "ugM-3";
+    md.kind = "double";
+    md.tracer = "true";
+    md.horizontalStaggerLocation = "center";
+    md.levels = "full";
+    md.space = "magnitude";
+    addFieldMetadata(fieldsmetadata, nlev, md);
+
+    md.longName = "mass_fraction_of_aitken_mode_in_air";
+    md.shortName = "mass_fraction_of_aitken_mode_in_air";
+    md.units = "none";
+    md.kind = "double";
+    md.tracer = "true";
+    md.horizontalStaggerLocation = "center";
+    md.levels = "full";
+    md.space = "magnitude";
+    addFieldMetadata(fieldsmetadata, nlev, md);
+
+    md.longName = "mass_fraction_of_accumulation_mode_in_air";
+    md.shortName = "mass_fraction_of_accumulation_mode_in_air";
+    md.units = "none";
+    md.kind = "double";
+    md.tracer = "true";
+    md.horizontalStaggerLocation = "center";
+    md.levels = "full";
+    md.space = "magnitude";
+    addFieldMetadata(fieldsmetadata, nlev, md);
+
+    md.longName = "mass_fraction_of_coarse_mode_in_air";
+    md.shortName = "mass_fraction_of_coarse_mode_in_air";
+    md.units = "none";
+    md.kind = "double";
+    md.tracer = "true";
+    md.horizontalStaggerLocation = "center";
+    md.levels = "full";
+    md.space = "magnitude";
+    addFieldMetadata(fieldsmetadata, nlev, md);
+
     md.longName = "u_component_of_native_D_grid_wind";
     md.shortName = "ud";
     md.units = "ms-1";
@@ -1838,36 +1959,6 @@ namespace fv3jedi {
     md.longName = "volume_extinction_in_air_due_to_aerosol_particles_lambda3";
     md.shortName = "ext3";
     md.units = "km-1";
-    md.kind = "double";
-    md.tracer = "true";
-    md.horizontalStaggerLocation = "center";
-    md.levels = "full";
-    md.space = "magnitude";
-    addFieldMetadata(fieldsmetadata, nlev, md);
-
-    md.longName = "pm25at";
-    md.shortName = "pm25at";
-    md.units = "none";
-    md.kind = "double";
-    md.tracer = "true";
-    md.horizontalStaggerLocation = "center";
-    md.levels = "full";
-    md.space = "magnitude";
-    addFieldMetadata(fieldsmetadata, nlev, md);
-
-    md.longName = "pm25ac";
-    md.shortName = "pm25ac";
-    md.units = "none";
-    md.kind = "double";
-    md.tracer = "true";
-    md.horizontalStaggerLocation = "center";
-    md.levels = "full";
-    md.space = "magnitude";
-    addFieldMetadata(fieldsmetadata, nlev, md);
-
-    md.longName = "pm25co";
-    md.shortName = "pm25co";
-    md.units = "none";
     md.kind = "double";
     md.tracer = "true";
     md.horizontalStaggerLocation = "center";

@@ -283,6 +283,8 @@ do f = 1, size(fields_to_do)
   case ("surface_temperature_where_snow")
   case ("pe")
   case ("p")
+  case ("dust")  
+  case ("smoke")
 
   case default
 
