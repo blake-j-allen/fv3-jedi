@@ -697,10 +697,10 @@ call afieldset%add(afield)
 call afield%final()
 
 ! Add vertical unit
+ps = constant('ps')
 if (trim(self%vertcoord_type) == 'sigma') then
    afield = self%afunctionspace%create_field(name='vert_coord', kind=atlas_real(kind_real), levels=self%npz)
    call afield%data(real_ptr)
-   ps = constant('ps')
    do jl=1,self%npz
       sigmaup = self%ak(jl+1)/ps+self%bk(jl+1) ! si are now sigmas
       sigmadn = self%ak(jl  )/ps+self%bk(jl  )
