@@ -1165,13 +1165,9 @@ endif()
 
 # H(x)
 # ----
-ecbuild_add_test( TARGET   fv3jedi_test_tier1_hofx_fv3lm_validate
-                  ARGS     --validate-only testinput/hofx_fv3lm.yaml
-                  COMMAND  fv3jedi_hofx.x )
-
 ecbuild_add_test( TARGET   fv3jedi_test_tier1_hofx_fv3lm
                   MPI      6
-                  ARGS     --no-validate testinput/hofx_fv3lm.yaml
+                  ARGS     testinput/hofx_fv3lm.yaml
                   COMMAND  fv3jedi_hofx.x )
 
 ecbuild_add_test( TARGET   fv3jedi_test_tier1_hofx_fv3-geos_cf
@@ -1373,36 +1369,24 @@ ecbuild_add_test( TARGET   fv3jedi_test_tier1_ensrecenter_gfs
 
 # hybrid 3DVar
 # -------------------------------
-ecbuild_add_test( TARGET   fv3jedi_test_tier1_hyb-3dvar_validate
-                  ARGS     --validate-only testinput/hyb-3dvar.yaml
-                  COMMAND  fv3jedi_var.x )
-
 ecbuild_add_test( TARGET   fv3jedi_test_tier1_hyb-3dvar
                   MPI      6
-                  ARGS     --no-validate testinput/hyb-3dvar.yaml
+                  ARGS     testinput/hyb-3dvar.yaml
                   COMMAND  fv3jedi_var.x
                   TEST_DEPENDS fv3jedi_test_tier1_bumpparameters_nicas_gfs )
 
 if (FV3JEDI_TEST_TIER GREATER_EQUAL 2)
-  ecbuild_add_test( TARGET   fv3jedi_test_tier2_hyb-3dvar_p12_validate
-                    ARGS     --validate-only testinput/hyb-3dvar_p12.yaml
-                    COMMAND  fv3jedi_var.x)
-
   ecbuild_add_test( TARGET   fv3jedi_test_tier2_hyb-3dvar_p12
                     MPI      12
-                    ARGS     --no-validate testinput/hyb-3dvar_p12.yaml
+                    ARGS     testinput/hyb-3dvar_p12.yaml
                     COMMAND  fv3jedi_var.x
                     TEST_DEPENDS fv3jedi_test_tier1_bumpparameters_nicas_gfs_p12 )
 endif()
 
 # 3DVar with zero obs
-ecbuild_add_test( TARGET   fv3jedi_test_tier1_3dvar_gfs_0obs_validate
-                  ARGS     --validate-only testinput/3dvar_gfs_0obs.yaml
-                  COMMAND  fv3jedi_var.x )
-
 ecbuild_add_test( TARGET   fv3jedi_test_tier1_3dvar_gfs_0obs
                   MPI      6
-                  ARGS     --no-validate testinput/3dvar_gfs_0obs.yaml
+                  ARGS     testinput/3dvar_gfs_0obs.yaml
                   COMMAND  fv3jedi_var.x )
 
 if( ${ropp-ufo_FOUND} )
@@ -1427,25 +1411,17 @@ ecbuild_add_test( TARGET   fv3jedi_test_tier1_3dvar_geos_cf
                   COMMAND  fv3jedi_var.x
                   TEST_DEPENDS fv3jedi_test_tier1_bumpparameters_nicas_geos_cf )
 
-ecbuild_add_test( TARGET   fv3jedi_test_tier1_hyb-fgat_gfs_aero_validate
-                  ARGS     --validate-only testinput/hyb-fgat_gfs_aero.yaml
-                  COMMAND  fv3jedi_var.x )
-
 ecbuild_add_test( TARGET   fv3jedi_test_tier1_hyb-fgat_gfs_aero
                   MPI      6
-                  ARGS     --no-validate testinput/hyb-fgat_gfs_aero.yaml
+                  ARGS     testinput/hyb-fgat_gfs_aero.yaml
                   COMMAND  fv3jedi_var.x
                   TEST_DEPENDS fv3jedi_test_tier1_bumpparameters_nicas_gfs_aero )
 
 # Hybrid FGAT
 # -----------
-ecbuild_add_test( TARGET   fv3jedi_test_tier1_hyb-fgat_fv3lm_validate
-                  ARGS     --validate-only testinput/hyb-fgat_fv3lm.yaml
-                  COMMAND  fv3jedi_var.x )
-
 ecbuild_add_test( TARGET   fv3jedi_test_tier1_hyb-fgat_fv3lm
                   MPI      6
-                  ARGS     --no-validate testinput/hyb-fgat_fv3lm.yaml
+                  ARGS     testinput/hyb-fgat_fv3lm.yaml
                   COMMAND  fv3jedi_var.x
                   TEST_DEPENDS fv3jedi_test_tier1_bumpparameters_nicas_geos )
 
@@ -1455,32 +1431,24 @@ ecbuild_add_test( TARGET   fv3jedi_test_tier1_hyb-fgat_fv3lm
 
 # 4DEnVar
 # -------
-ecbuild_add_test( TARGET   fv3jedi_test_tier1_4denvar_validate
-                  ARGS     --validate-only testinput/4denvar.yaml
-                  COMMAND  fv3jedi_var.x )
-
 ecbuild_add_test( TARGET   fv3jedi_test_tier1_4denvar
                   MPI      12
-                  ARGS     --no-validate testinput/4denvar.yaml
+                  ARGS     testinput/4denvar.yaml
                   COMMAND  fv3jedi_var.x
                   TEST_DEPENDS fv3jedi_test_tier1_bumpparameters_nicas_gfs )
 
 ecbuild_add_test( TARGET   fv3jedi_test_tier1_4denvar_seq
                   MPI      6
-                  ARGS     --no-validate testinput/4denvar_seq.yaml
+                  ARGS     testinput/4denvar_seq.yaml
                   COMMAND  fv3jedi_var.x
                   TEST_DEPENDS fv3jedi_test_tier1_bumpparameters_nicas_gfs )
 
 
 # Hybrid 4DVar
 # ------------
-ecbuild_add_test( TARGET   fv3jedi_test_tier1_hyb-4dvar_pseudo-geos_validate
-                  ARGS     --validate-only testinput/hyb-4dvar_pseudo-geos.yaml
-                  COMMAND  fv3jedi_var.x )
-
 ecbuild_add_test( TARGET   fv3jedi_test_tier1_hyb-4dvar_pseudo-geos
                   MPI      6
-                  ARGS     --no-validate testinput/hyb-4dvar_pseudo-geos.yaml
+                  ARGS     testinput/hyb-4dvar_pseudo-geos.yaml
                   COMMAND  fv3jedi_var.x
                   TEST_DEPENDS fv3jedi_test_tier1_bumpparameters_nicas_geos )
 
@@ -1493,12 +1461,12 @@ ecbuild_add_test( TARGET   fv3jedi_test_tier1_adjointforecast
 
 ecbuild_add_test( TARGET   fv3jedi_test_tier1_gen_hybrid_linear_model_coeffs
                   MPI      6
-                  ARGS     --no-validate testinput/gen_hybrid_linear_model_coeffs.yaml
+                  ARGS     testinput/gen_hybrid_linear_model_coeffs.yaml
                   COMMAND  fv3jedi_gen_hybrid_linear_model_coeffs.x )
 
 ecbuild_add_test( TARGET   fv3jedi_test_tier1_4dvar_hybrid_linear_model
                   MPI      6
-                  ARGS     --no-validate testinput/4dvar_hybrid_linear_model.yaml
+                  ARGS     testinput/4dvar_hybrid_linear_model.yaml
                   COMMAND  fv3jedi_var.x
                   TEST_DEPENDS fv3jedi_test_tier1_gen_hybrid_linear_model_coeffs )
 
@@ -1506,29 +1474,21 @@ ecbuild_add_test( TARGET   fv3jedi_test_tier1_4dvar_hybrid_linear_model
 #--------------
 ecbuild_add_test( TARGET   fv3jedi_test_tier1_4dvar_append_obs
                   MPI      6
-                  ARGS     --no-validate testinput/4dvar_append_obs.yaml
+                  ARGS     testinput/4dvar_append_obs.yaml
                   COMMAND  fv3jedi_var.x
                   TEST_DEPENDS fv3jedi_test_tier1_gen_hybrid_linear_model_coeffs )
 
 # FSOI
 # ----
-ecbuild_add_test( TARGET   fv3jedi_test_tier1_hyb-3dvar_fsoi_forward_validate
-                  ARGS     --validate-only testinput/hyb-3dvar_fsoi_forward.yaml
-                  COMMAND  fv3jedi_var.x )
-
 ecbuild_add_test( TARGET   fv3jedi_test_tier1_hyb-3dvar_fsoi_forward
                   MPI      6
-                  ARGS     --no-validate testinput/hyb-3dvar_fsoi_forward.yaml
+                  ARGS     testinput/hyb-3dvar_fsoi_forward.yaml
                   COMMAND  fv3jedi_var.x
                   TEST_DEPENDS fv3jedi_test_tier1_bumpparameters_nicas_gfs )
 
-ecbuild_add_test( TARGET   fv3jedi_test_tier1_hyb-3dvar_fsoi_backward_validate
-                  ARGS     --validate-only testinput/hyb-3dvar_fsoi_backward.yaml
-                  COMMAND  fv3jedi_var.x )
-
 ecbuild_add_test( TARGET   fv3jedi_test_tier1_hyb-3dvar_fsoi_backward
                   MPI      6
-                  ARGS     --no-validate testinput/hyb-3dvar_fsoi_backward.yaml
+                  ARGS     testinput/hyb-3dvar_fsoi_backward.yaml
                   COMMAND  fv3jedi_var.x
                   TEST_DEPENDS fv3jedi_test_tier1_hyb-3dvar_fsoi_forward )
 
@@ -1581,18 +1541,14 @@ ecbuild_add_test( TARGET   fv3jedi_test_tier1_letkf3d_vertloc
                   ARGS     testinput/letkf3d.yaml
                   COMMAND  fv3jedi_letkf.x )
 
-ecbuild_add_test( TARGET   fv3jedi_test_tier1_lgetkf_validate
-                  ARGS     --validate-only testinput/lgetkf.yaml
-                  COMMAND  fv3jedi_letkf.x )
-
 ecbuild_add_test( TARGET   fv3jedi_test_tier1_lgetkf
                   MPI      6
-                  ARGS     --no-validate testinput/lgetkf.yaml
+                  ARGS     testinput/lgetkf.yaml
                   COMMAND  fv3jedi_letkf.x )
 
 ecbuild_add_test( TARGET   fv3jedi_test_tier1_lgetkf_linearobserver
                   MPI      6
-                  ARGS     --no-validate testinput/lgetkf_linearobserver.yaml
+                  ARGS     testinput/lgetkf_linearobserver.yaml
                   COMMAND  fv3jedi_letkf.x )
 
 # Land DA
@@ -1641,18 +1597,14 @@ ecbuild_add_test( TARGET   fv3jedi_test_tier1_enshofx_fv3lm
 # 3DVar
 ecbuild_add_test( TARGET   fv3jedi_test_tier1_eda_3dvar_control_pert
                   MPI      12
-                  ARGS     --no-validate testinput/eda_3dvar_control_pert.yaml
+                  ARGS     testinput/eda_3dvar_control_pert.yaml
                   COMMAND  fv3jedi_controlpert.x
                   TEST_DEPENDS fv3jedi_test_tier1_bumpparameters_nicas_gfs )
 
 # Block-Lanczos EDA of 3DVars
-ecbuild_add_test( TARGET   fv3jedi_test_tier1_eda_block_3dvar_validate
-                  ARGS     --validate-only testinput/eda_block_3dvar.yaml
-                  COMMAND  fv3jedi_eda.x )
-
 ecbuild_add_test( TARGET   fv3jedi_test_tier1_eda_block_3dvar
                   MPI      12
-                  ARGS     --no-validate testinput/eda_block_3dvar.yaml
+                  ARGS     testinput/eda_block_3dvar.yaml
                   COMMAND  fv3jedi_eda.x
                   TEST_DEPENDS fv3jedi_test_tier1_bumpparameters_nicas_gfs )
 
@@ -1994,13 +1946,9 @@ if (FV3JEDI_TEST_TIER GREATER_EQUAL 2)
 
   # EDA 4DVar
   # ---------
-  ecbuild_add_test( TARGET   fv3jedi_test_tier2_eda_4dvar_fv3lm_validate
-                    ARGS     --validate-only testinput/eda_4dvar_fv3lm.yaml
-                    COMMAND  fv3jedi_eda.x )
-
   ecbuild_add_test( TARGET   fv3jedi_test_tier2_eda_4dvar_fv3lm
                     MPI      12
-                    ARGS     --no-validate testinput/eda_4dvar_fv3lm.yaml
+                    ARGS     testinput/eda_4dvar_fv3lm.yaml
                     COMMAND  fv3jedi_eda.x
                     TEST_DEPENDS fv3jedi_test_tier1_bumpparameters_nicas_gfs )
 
