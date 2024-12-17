@@ -477,7 +477,7 @@ do var = 1,size(fields)
         rstflag(indexrst) = .true.
      else
         call abor1_ftn('fv3jedi_io_fms_mod.read_restart_fields: file ' &
-                        // trim(self%datapath)//'/'//trim(self%filename_nonrestart) // &
+                        // trim(self%datapath)//'/'//trim(self%filenames(indexrst)) // &
                        ' could not be opened')
      end if
   end if
