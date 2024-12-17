@@ -824,7 +824,7 @@ namespace fv3jedi {
     md.space = "magnitude";
     addFieldMetadata(fieldsmetadata, nlev, md);
 
-    md.longName = "surface_bouyancy_scale";
+    md.longName = "surface_buoyancy_scale";
     md.shortName = "bstar";
     md.units = "ms-2";
     md.kind = "double";
