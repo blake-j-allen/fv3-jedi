@@ -903,8 +903,10 @@ real(kind=kind_real), allocatable :: latg(:,:), long(:,:), xdimydim(:)
 
 ! Gathered lats/lons
 ! ------------------
-allocate(latg(1:self%npx-1,1:self%npy-1))
-allocate(long(1:self%npx-1,1:self%npy-1))
+if (self%iam_io_proc) then
+  allocate(latg(1:self%npx-1,1:self%npy-1))
+  allocate(long(1:self%npx-1,1:self%npy-1))
+endif
 
 if (self%csize > 6) then
   call self%tile_comms%gather_tile(self%grid_lat, latg)

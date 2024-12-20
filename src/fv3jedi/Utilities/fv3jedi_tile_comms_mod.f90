@@ -271,7 +271,7 @@ end subroutine scatter_tile_r3
 ! --------------------------------------------------------------------------------------------------
 
 
-subroutine gather_tile_r2(self, field_tile, field_patch)
+subroutine gather_tile_r2(self, field_patch, field_tile)
 
 ! Arguments
 class(fv3jedi_tile_comms), intent(inout) :: self
