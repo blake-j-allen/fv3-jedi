@@ -12,7 +12,6 @@
 #include <string>
 
 #include "eckit/config/Configuration.h"
-#include "fv3jedi/Utilities/Traits.h"
 #include "fv3jedi/VariableChange/Base/VariableChangeBase.h"
 #include "VarChaA2M.interface.h"
 
