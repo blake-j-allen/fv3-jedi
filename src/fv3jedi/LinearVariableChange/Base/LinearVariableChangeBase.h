@@ -16,7 +16,7 @@
 
 #include "fv3jedi/VariableChange/VaderCookbook.h"
 
-#include "oops/base/LinearVariableChangeParametersBase.h"
+#include "oops/base/ParameterTraitsVariables.h"
 #include "oops/base/Variables.h"
 #include "oops/util/AssociativeContainers.h"
 #include "oops/util/parameters/ConfigurationParameter.h"
@@ -35,11 +35,12 @@ namespace fv3jedi {
 
 // -------------------------------------------------------------------------------------------------
 
-class LinearVariableChangeParametersBase : public oops::LinearVariableChangeParametersBase {
-  OOPS_ABSTRACT_PARAMETERS(LinearVariableChangeParametersBase,
-                                                           oops::LinearVariableChangeParametersBase)
+class LinearVariableChangeParametersBase : public oops::Parameters {
+  OOPS_ABSTRACT_PARAMETERS(LinearVariableChangeParametersBase, oops::Parameters)
 
  public:
+  oops::OptionalParameter<oops::Variables> inputVariables{"input variables", this};
+  oops::OptionalParameter<oops::Variables> outputVariables{"output variables", this};
   oops::OptionalParameter<std::string> name{"linear variable change name", this};
   oops::Parameter<std::map<std::string, std::vector<std::string>>> vaderCustomCookbook{
     "vader custom cookbook", vaderFV3CustomCookbook(), this};
@@ -76,9 +77,8 @@ class LinearVariableChangeFactory;
 
 // -------------------------------------------------------------------------------------------------
 
-class LinearVariableChangeParametersWrapper : public oops::LinearVariableChangeParametersBase {
-  OOPS_CONCRETE_PARAMETERS(LinearVariableChangeParametersWrapper,
-                           oops::LinearVariableChangeParametersBase)
+class LinearVariableChangeParametersWrapper : public oops::Parameters {
+  OOPS_CONCRETE_PARAMETERS(LinearVariableChangeParametersWrapper, oops::Parameters)
  public:
   oops::PolymorphicParameter<fv3jedi::LinearVariableChangeParametersBase,
                              LinearVariableChangeFactory>
