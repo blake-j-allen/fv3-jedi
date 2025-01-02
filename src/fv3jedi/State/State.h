@@ -16,7 +16,6 @@
 
 #include "oops/base/ParameterTraitsVariables.h"
 #include "oops/base/Variables.h"
-#include "oops/base/WriteParametersBase.h"
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
 
@@ -62,9 +61,17 @@ class StateParameters : public oops::Parameters {
 
 // -------------------------------------------------------------------------------------------------
 
-class StateWriteParameters : public oops::WriteParametersBase {
-  OOPS_CONCRETE_PARAMETERS(StateWriteParameters, WriteParametersBase)
+class StateWriteParameters : public oops::Parameters {
+  OOPS_CONCRETE_PARAMETERS(StateWriteParameters, Parameters)
  public:
+  oops::OptionalParameter<std::string> type{"type", this};
+  oops::OptionalParameter<std::string> exp{"exp", this};
+  oops::OptionalParameter<int> member{"member", this};
+  oops::OptionalParameter<std::string> memberPattern{"member pattern", this};
+  oops::OptionalParameter<util::DateTime> date{"date", this};
+  oops::OptionalParameter<int> iteration{"iteration", this};
+  oops::OptionalParameter<std::string> prefix{"prefix", this};
+  oops::Parameter<bool> dateCols{"date colons", true, this};
   IOParametersWrapper ioParametersWrapper{this};
 };
 

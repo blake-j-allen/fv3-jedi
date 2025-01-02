@@ -14,10 +14,10 @@
 
 #include <boost/noncopyable.hpp>
 
-#include "oops/base/WriteParametersBase.h"
 #include "oops/util/AssociativeContainers.h"
 #include "oops/util/parameters/OptionalParameter.h"
 #include "oops/util/parameters/OptionalPolymorphicParameter.h"
+#include "oops/util/parameters/Parameter.h"
 #include "oops/util/parameters/Parameters.h"
 #include "oops/util/Printable.h"
 
@@ -44,9 +44,17 @@ class IOBase : public util::Printable, private boost::noncopyable {
 
 // -------------------------------------------------------------------------------------------------
 
-class IOParametersBase : public oops::WriteParametersBase {
-  OOPS_ABSTRACT_PARAMETERS(IOParametersBase, WriteParametersBase)
+class IOParametersBase : public oops::Parameters {
+  OOPS_ABSTRACT_PARAMETERS(IOParametersBase, Parameters)
  public:
+  oops::OptionalParameter<std::string> type{"type", this};
+  oops::OptionalParameter<std::string> exp{"exp", this};
+  oops::OptionalParameter<int> member{"member", this};
+  oops::OptionalParameter<std::string> memberPattern{"member pattern", this};
+  oops::OptionalParameter<util::DateTime> date{"date", this};
+  oops::OptionalParameter<int> iteration{"iteration", this};
+  oops::OptionalParameter<std::string> prefix{"prefix", this};
+  oops::Parameter<bool> dateCols{"date colons", true, this};
   oops::OptionalParameter<std::string> filetype{"filetype", this};
 };
 

@@ -17,7 +17,6 @@
 #include "eckit/config/Configuration.h"
 
 #include "oops/base/LocalIncrement.h"
-#include "oops/base/WriteParametersBase.h"
 #include "oops/util/DateTime.h"
 #include "oops/util/dot_product.h"
 #include "oops/util/Duration.h"
@@ -72,9 +71,17 @@ class IncrementReadParameters : public oops::Parameters {
 
 // -------------------------------------------------------------------------------------------------
 
-class IncrementWriteParameters : public oops::WriteParametersBase {
-  OOPS_CONCRETE_PARAMETERS(IncrementWriteParameters, WriteParametersBase)
+class IncrementWriteParameters : public oops::Parameters {
+  OOPS_CONCRETE_PARAMETERS(IncrementWriteParameters, Parameters)
  public:
+  oops::OptionalParameter<std::string> type{"type", this};
+  oops::OptionalParameter<std::string> exp{"exp", this};
+  oops::OptionalParameter<int> member{"member", this};
+  oops::OptionalParameter<std::string> memberPattern{"member pattern", this};
+  oops::OptionalParameter<util::DateTime> date{"date", this};
+  oops::OptionalParameter<int> iteration{"iteration", this};
+  oops::OptionalParameter<std::string> prefix{"prefix", this};
+  oops::Parameter<bool> dateCols{"date colons", true, this};
   IOParametersWrapper ioParametersWrapper{this};
 };
 
