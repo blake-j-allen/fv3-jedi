@@ -44,6 +44,7 @@ model:
   - f10m
 initial condition:
   datetime: 2021-03-23T06:00:00Z
+  forecast length: *fclength
   filetype: fms restart
   datapath: Data/ModelRunDirs/UFS_warmstart_2/INPUT
   filename_core: fv_core.res.nc
