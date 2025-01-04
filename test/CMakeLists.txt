@@ -279,6 +279,7 @@ list( APPEND fv3jedi_testinput
   testinput/variablechange_geos.yaml
   testinput/variablechange_gfs.yaml
   testinput/ens_spread_geos.yaml
+  testinput/processperts_gfs.yaml
 )
 
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/testinput)
@@ -405,6 +406,7 @@ list( APPEND fv3jedi_testoutput
   testoutput/ensembleb_loc_gfs.ref
   testoutput/ensembleb_nicas_gfs.ref
   testoutput/ensembleb_dirac_local_gfs_12pe.ref
+  testoutput/processperts_gfs.ref
   testoutput/update_output.py
 )
 
@@ -697,6 +699,7 @@ file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Data/analysis/letkf/gfs_land)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Data/increment)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Data/ensvariance)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Data/convertstate)
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Data/filtered_pert)
 
 set(members mem001;mem002;mem003;mem004)
 foreach(MEM IN LISTS members)
@@ -1591,6 +1594,14 @@ ecbuild_add_test( TARGET   fv3jedi_test_tier1_enshofx_fv3lm
                   MPI      12
                   ARGS     testinput/enshofx_fv3lm.yaml
                   COMMAND  fv3jedi_enshofx.x )
+
+
+# Ensemble perturbation scale decomposition
+# ------------------------
+ecbuild_add_test( TARGET   fv3jedi_test_tier1_process_perts
+	          MPI      6
+		  ARGS     testinput/processperts_gfs.yaml
+		  COMMAND  fv3jedi_processperts.x)
 
 # Ensemble data assimilation tests
 # --------------------------------

@@ -110,6 +110,12 @@ ecbuild_add_executable( TARGET  fv3jedi_linearization_error.x
                         LIBS    ${FV3JEDI_LIBRARIES}
                       )
 
+ecbuild_add_executable( TARGET  fv3jedi_processperts.x
+                        SOURCES fv3jediProcessPerts.cc
+                        LIBS    ${FV3JEDI_LIBRARIES}
+                                saber
+                      )	      
+
 # Plotting utility
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/fv3jedi_plot_field.py ${CMAKE_BINARY_DIR}/bin/fv3jedi_plot_field.x COPYONLY)
 execute_process( COMMAND chmod +x ${CMAKE_BINARY_DIR}/bin/fv3jedi_plot_field.x)

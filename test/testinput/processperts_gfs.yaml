@@ -1,0 +1,142 @@
+geometry:
+  fms initialization:
+    namelist filename: Data/fv3files/fmsmpp.nml
+    field table filename: Data/fv3files/field_table_gfdl
+  akbk: Data/fv3files/akbk127.nc4
+  layout: [1,1]
+  npx: 13
+  npy: 13
+  npz: 127
+  field metadata override: Data/fieldmetadata/gfs-restart.yaml
+background:
+  datetime: 2020-12-15T00:00:00Z
+  filetype: fms restart
+  state variables:
+  - u
+  - v
+  - ua
+  - va
+  - T
+  - delp
+  - sphum
+  - ice_wat
+  - liq_wat
+  - o3mr
+  - phis
+  - slmsk
+  - sheleg
+  - tsea
+  - vtype
+  - stype
+  - vfrac
+  - stc
+  - smc
+  - snwdph
+  - u_srf
+  - v_srf
+  - f10m
+  - ps
+  datapath: Data/inputs/gfs_c12/bkg/
+  filename_core: 20201215.000000.fv_core.res.nc
+  filename_trcr: 20201215.000000.fv_tracer.res.nc
+  filename_sfcd: 20201215.000000.sfc_data.nc
+  filename_sfcw: 20201215.000000.fv_srf_wnd.res.nc
+  filename_cplr: 20201215.000000.coupler.res
+
+bands:
+- band:
+    filter:
+      saber central block:
+        saber block name: ID
+      saber outer blocks:
+      - saber block name: spectral analytical filter
+        function:
+          horizontal daley length: 5000e3
+        normalize filter variance: false
+        active variables:
+        - air_horizontal_streamfunction
+        - air_horizontal_velocity_potential
+        - air_temperature
+        - water_vapor_mixing_ratio_wrt_moist_air
+      - saber block name: spectral to gauss
+        active variables:
+        - eastward_wind
+        - northward_wind
+        - air_horizontal_streamfunction
+        - air_horizontal_velocity_potential
+        - air_temperature
+        - water_vapor_mixing_ratio_wrt_moist_air
+        filter mode: true
+      - saber block name: write variances
+        binning:
+          type: "horizontal global average"
+        field names:
+        - eastward_wind
+        - northward_wind
+        - air_temperature
+        - water_vapor_mixing_ratio_wrt_moist_air
+        instantaneous statistics:
+          multiply fset filename: wb1_variance
+          output path: Data/filtered_pert
+      - saber block name: write fields
+        output path: Data/filtered_pert
+        multiply fset filename: wb1_inc
+      - saber block name: interpolation
+        active variables: 
+        - eastward_wind
+        - northward_wind
+        - air_temperature
+        - water_vapor_mixing_ratio_wrt_moist_air
+        filter mode: true
+        inner geometry:
+          function space: StructuredColumns
+          grid:
+            type: regular_gaussian
+            N: 13
+          partitioner: ectrans
+          halo: 1
+        forward interpolator:
+          local interpolator type: oops unstructured grid interpolator
+        inverse interpolator:
+          local interpolator type: oops unstructured grid interpolator
+  output:
+    model write:
+      filetype: auxgrid
+      gridtype: latlon
+      filename: Data/filtered_pert/wb1_pert_mb%MEM%_
+      member pattern: '%MEM%'
+- band:
+    residual increment from previous bands: true
+  output:
+    model write:
+      filetype: auxgrid
+      gridtype: latlon
+      filename: Data/filtered_pert/wb2_pert_mb%MEM%_
+      member pattern: '%MEM%'
+
+input variables:
+- eastward_wind
+- northward_wind
+- air_temperature
+- water_vapor_mixing_ratio_wrt_moist_air
+
+ensemble:
+  members from template:
+    template:
+      datetime: 2020-12-15T00:00:00Z
+      filetype: fms restart
+      state variables: [ua,va,T,delp,sphum,ice_wat,liq_wat,o3mr]
+      datapath: Data/inputs/gfs_c12/mem%mem%/
+      filename_core: 20201215.000000.fv_core.res.nc
+      filename_trcr: 20201215.000000.fv_tracer.res.nc
+      filename_sfcd: 20201215.000000.sfc_data.nc
+      filename_sfcw: 20201215.000000.fv_srf_wnd.res.nc
+      filename_cplr: 20201215.000000.coupler.res
+    pattern: '%mem%'
+    nmembers: 10
+    zero padding: 3
+
+test:
+  reference filename: testoutput/processperts_gfs.ref
+  test output filename: testoutput/processperts_gfs.test.out
+  float relative tolerance: 1.0e-3
