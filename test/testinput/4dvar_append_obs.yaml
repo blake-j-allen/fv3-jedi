@@ -94,7 +94,7 @@ cost function:
   - ozone_mass_mixing_ratio
   time window:
     begin: 2020-12-14T21:00:00Z
-    length: PT6H
+    length: PT3H
   variable change:
     variable change name: Analysis2Model
   model:
@@ -153,7 +153,11 @@ variational:
         model variables: *modelvars
   - ninner: 2
     gradient norm reduction: 1e-10
-    obs append directory: Data/obs/testinput_tier_1/obsappend2
+    continuous DA:
+      obs append directory: Data/obs/testinput_tier_1/obsappend2
+      time window:
+        begin: 2020-12-14T21:00:00Z
+        length: PT6H
     test: on
     geometry:
       akbk: Data/fv3files/akbk127.nc4
