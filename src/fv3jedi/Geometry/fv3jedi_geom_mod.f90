@@ -1353,6 +1353,7 @@ subroutine get_coords_and_connectivities_regional(self, &
   integer :: loc_ghost(self%isd:self%ied, self%jsd:self%jed)
   integer :: loc_global_index(self%isd:self%ied, self%jsd:self%jed)
   integer :: loc_remote_index(self%isd:self%ied, self%jsd:self%jed)
+  integer :: exchange_remote_index(self%isd:self%ied, self%jsd:self%jed)
   integer :: loc_partition(self%isd:self%ied, self%jsd:self%jed)
 
   left_bdry = (self%isc == 1)
@@ -1370,21 +1371,21 @@ subroutine get_coords_and_connectivities_regional(self, &
     jmax = jmax + 1
   end if
 
-  ! bool to identify first halo layer that is BC
+  ! identify which points in first halo layer are this tasks's BC points
   loc_bc = .false.
-  if (left_bdry) loc_bc(self%isc-1, :) = .true.
-  if (right_bdry) loc_bc(self%iec+1, :) = .true.
-  if (lower_bdry) loc_bc(:, self%jsc-1) = .true.
-  if (upper_bdry) loc_bc(:, self%jec+1) = .true.
+  if (left_bdry) loc_bc(self%isc-1, self%jsc:self%jec) = .true.
+  if (right_bdry) loc_bc(self%iec+1, self%jsc:self%jec) = .true.
+  if (lower_bdry) loc_bc(self%isc:self%iec, self%jsc-1) = .true.
+  if (upper_bdry) loc_bc(self%isc:self%iec, self%jec+1) = .true.
+  if (left_bdry .and. lower_bdry) loc_bc(self%isc-1, self%jsc-1) = .true.
+  if (left_bdry .and. upper_bdry) loc_bc(self%isc-1, self%jec+1) = .true.
+  if (right_bdry .and. lower_bdry) loc_bc(self%iec+1, self%jsc-1) = .true.
+  if (right_bdry .and. upper_bdry) loc_bc(self%iec+1, self%jec+1) = .true.
 
   ! local 2d array for ghost, no need to exchange
   loc_ghost = 1
   loc_ghost(self%isc:self%iec, self%jsc:self%jec) = 0
   where (loc_bc) loc_ghost = 0
-  !if (left_bdry) loc_ghost(self%isc-1, :) = 0
-  !if (right_bdry) loc_ghost(self%iec+1, :) = 0
-  !if (lower_bdry) loc_ghost(:, self%jsc-1) = 0
-  !if (upper_bdry) loc_ghost(:, self%jec+1) = 0
 
   ! local 2d arrays for global_index, remote_index, and partition for exchanging across tasks
 
@@ -1405,7 +1406,9 @@ subroutine get_coords_and_connectivities_regional(self, &
     end do
   end do
   counter_local_idx = maxval(loc_remote_index)
+  ! use exchange to fill halo points with neighboring task's index
   call mpp_update_domains(loc_remote_index, self%domain)
+  ! for halo points that are actually a BC, generate new local indices
   do j = self%jsc-1, self%jec+1
     do i = self%isc-1, self%iec+1
       if (loc_bc(i, j)) then
@@ -1419,6 +1422,111 @@ subroutine get_coords_and_connectivities_regional(self, &
   loc_partition(self%isc:self%iec, self%jsc:self%jec) = self%f_comm%rank()
   call mpp_update_domains(loc_partition, self%domain)
   where (loc_bc) loc_partition = self%f_comm%rank()
+
+  ! special case handling of halo points within the BC region:
+  !
+  ! to allow JEDI's generic code (using atlas) to perform halo exchanges within the BC region, we
+  ! need to pass connectivity information (atlas's partition number and index of each point)
+  ! between adjacent processors on the boundary. this is slightly tedious to do, because fv3's own
+  ! halo-exchanges do NOT pass around BC information.
+  !
+  ! our strategy is take the indices that were generated to fill loc_remote_index, copy them into
+  ! the *owned* portion of a dummy array, then use fv3's halo exchanges to send them to neighboring
+  ! MPI tasks. this adds an extra MPI communication, but avoids the need to implement complicated
+  ! logic to recreated the neighboring task's locally-generated indices into its BC regions.
+  !
+  ! in this illustration,
+  !
+  ! boundary condition        bc0   bc1   bc2   bc3 | bc4   bc5   bc6   bc7
+  !                                                 |
+  ! upper boundary of domain  ----------------------+----------------------
+  !                                                 |
+  ! interior points           x0    x1    x2    x3  | y0    y1    y2    y3
+  !                                 task 0          |       task 1
+  !
+  ! task 0 needs to fill the halo location `bc4` adjacent to its BC location `bc3`. the partition
+  ! number is easily obtained by reading the partition of points `y0`, as these must match.
+  ! however, the index of `bc4` on task 1 is hard to recompute on task 0, so we follow these steps,
+  ! - task 1 copies the generated index of `bc4` into the `y0` slot of a dummy array
+  ! - use fv3's halo exchange to send this index into the halo region on task 0
+  ! - task 0 reads `bc4`'s local index (from task 1) in the `y0` slot of the dummy array
+  exchange_remote_index = -1
+  if (left_bdry) then
+    if (.not.upper_bdry) then
+      ! fill upper-left OWNED point with generated index of corresponding BC point
+      exchange_remote_index(self%isc, self%jec) = loc_remote_index(self%isc-1, self%jec)
+    end if
+    if (.not.lower_bdry) then
+      exchange_remote_index(self%isc, self%jsc) = loc_remote_index(self%isc-1, self%jsc)
+    end if
+  end if
+  if (right_bdry) then
+    if (.not.upper_bdry) then
+      exchange_remote_index(self%iec, self%jec) = loc_remote_index(self%iec+1, self%jec)
+    end if
+    if (.not.lower_bdry) then
+      exchange_remote_index(self%iec, self%jsc) = loc_remote_index(self%iec+1, self%jsc)
+    end if
+  end if
+  if (lower_bdry) then
+    if (.not.left_bdry) then
+      exchange_remote_index(self%isc, self%jsc) = loc_remote_index(self%isc, self%jsc-1)
+    end if
+    if (.not.right_bdry) then
+      exchange_remote_index(self%iec, self%jsc) = loc_remote_index(self%iec, self%jsc-1)
+    end if
+  end if
+  if (upper_bdry) then
+    if (.not.left_bdry) then
+      exchange_remote_index(self%isc, self%jec) = loc_remote_index(self%isc, self%jec+1)
+    end if
+    if (.not.right_bdry) then
+      exchange_remote_index(self%iec, self%jec) = loc_remote_index(self%iec, self%jec+1)
+    end if
+  end if
+  ! halo-exchange the dummy array
+  call mpp_update_domains(exchange_remote_index, self%domain)
+  if (left_bdry) then
+    if (.not.upper_bdry) then
+      ! fill upper-left BC from neighbor's lower-right OWNED point, using the index already in halo
+      loc_remote_index(self%isc-1, self%jec+1) = exchange_remote_index(self%isc, self%jec+1)
+      loc_partition(self%isc-1, self%jec+1) = loc_partition(self%isc, self%jec+1)
+    end if
+    if (.not.lower_bdry) then
+      loc_remote_index(self%isc-1, self%jsc-1) = exchange_remote_index(self%isc, self%jsc-1)
+      loc_partition(self%isc-1, self%jsc-1) = loc_partition(self%isc, self%jsc-1)
+    end if
+  end if
+  if (right_bdry) then
+    if (.not.upper_bdry) then
+      loc_remote_index(self%iec+1, self%jec+1) = exchange_remote_index(self%iec, self%jec+1)
+      loc_partition(self%iec+1, self%jec+1) = loc_partition(self%iec, self%jec+1)
+    end if
+    if (.not.lower_bdry) then
+      loc_remote_index(self%iec+1, self%jsc-1) = exchange_remote_index(self%iec, self%jsc-1)
+      loc_partition(self%iec+1, self%jsc-1) = loc_partition(self%iec, self%jsc-1)
+    end if
+  end if
+  if (lower_bdry) then
+    if (.not.left_bdry) then
+      loc_remote_index(self%isc-1, self%jsc-1) = exchange_remote_index(self%isc-1, self%jsc)
+      loc_partition(self%isc-1, self%jsc-1) = loc_partition(self%isc-1, self%jsc)
+    end if
+    if (.not.right_bdry) then
+      loc_remote_index(self%iec+1, self%jsc-1) = exchange_remote_index(self%iec+1, self%jsc)
+      loc_partition(self%iec+1, self%jsc-1) = loc_partition(self%iec+1, self%jsc)
+    end if
+  end if
+  if (upper_bdry) then
+    if (.not.left_bdry) then
+      loc_remote_index(self%isc-1, self%jec+1) = exchange_remote_index(self%isc-1, self%jec)
+      loc_partition(self%isc-1, self%jec+1) = loc_partition(self%isc-1, self%jec)
+    end if
+    if (.not.right_bdry) then
+      loc_remote_index(self%iec+1, self%jec+1) = exchange_remote_index(self%iec+1, self%jec)
+      loc_partition(self%iec+1, self%jec+1) = loc_partition(self%iec+1, self%jec)
+    end if
+  end if
 
   call self%fv3_nodes_to_atlas_nodes(self%grid_lon, lons)
   call self%fv3_nodes_to_atlas_nodes(self%grid_lat, lats)
